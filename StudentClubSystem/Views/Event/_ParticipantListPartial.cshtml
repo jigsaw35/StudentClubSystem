@@ -1,0 +1,37 @@
+﻿@model IEnumerable<StudentClubSystem.Models.EventRegistration>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">Henüz bu etkinliğe kayıt olan kimse yok.</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Ad Soyad</th>
+                <th>Email</th>
+                <th>Kayıt Tarihi</th>
+                <th>Durum</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.User.AdSoyad</td>
+                    <td>@item.User.Email</td>
+                    <td>@item.KayitTarihi.ToShortDateString()</td>
+                    <td>
+                        <span class="badge bg-secondary status-badge-@item.Id">@item.OnayDurumu</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-xs btn-success btnStatus" data-id="@item.Id" data-status="Onaylı">✔</button>
+                        <button class="btn btn-xs btn-danger btnStatus" data-id="@item.Id" data-status="Reddedildi">✘</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

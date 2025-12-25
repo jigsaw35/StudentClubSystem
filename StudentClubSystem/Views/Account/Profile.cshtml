@@ -1,0 +1,64 @@
+﻿@model StudentClubSystem.Models.User
+
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Profil Bilgileri</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Ad Soyad:</strong> @Model.AdSoyad</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Rol:</strong> <span class="badge bg-info">@Model.Rol</span></p>
+        </div>
+    </div>
+
+    <h4 class="mt-5">Katıldığım Etkinlikler</h4>
+    <hr />
+
+    @if (Model.EventRegistrations != null && Model.EventRegistrations.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Etkinlik Adı</th>
+                    <th>Tarih</th>
+                    <th>Konum</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reg in Model.EventRegistrations)
+                {
+                    <tr>
+                        <td>@reg.Event.Baslik</td>
+                        <td>@reg.Event.BaslangicTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@reg.Event.Konum</td>
+                        <td>
+                            @if (reg.OnayDurumu == "Onaylı")
+                            {
+                                <span class="badge bg-success">Onaylı</span>
+                            }
+                            else if (reg.OnayDurumu == "Reddedildi")
+                            {
+                                <span class="badge bg-danger">Reddedildi</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Beklemede</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">Henüz hiçbir etkinliğe kayıt olmadınız.</div>
+        <a asp-controller="Event" asp-action="Index" class="btn btn-primary">Etkinliklere Göz At</a>
+    }
+</div>

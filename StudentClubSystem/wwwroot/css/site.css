@@ -1,0 +1,60 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+/* Genel Gövde */
+body {
+    background-color: #fdfdfd;
+}
+
+/* Kartlar için Yumuþak Gölge */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-2px); /* Kartýn üzerine gelince hafif yukarý kalksýn */
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    }
+
+/* Tablo Güzelleþtirme */
+.table thead th {
+    background-color: #593196; /* Pulse temasýna uygun mor */
+    color: white;
+    border: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f0ebfa; /* Üzerine gelince çok açýk mor */
+    transition: background-color 0.3s;
+}
+
+/* Badge (Etiket) Ýyileþtirmesi */
+.badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* Buton Ýkon Aralarý */
+.btn i {
+    margin-right: 5px;
+}

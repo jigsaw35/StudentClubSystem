@@ -1,0 +1,65 @@
+﻿@model StudentClubSystem.Models.Event
+
+@{
+    ViewData["Title"] = "Etkinliği Düzenle";
+}
+
+<div class="container mt-4">
+    <h2>Etkinliği Düzenle</h2>
+    <hr />
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Hangi Kulüp?</label>
+                    <select asp-for="KulupId" class="form-control" asp-items="ViewBag.Clubs"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Başlık</label>
+                    <input asp-for="Baslik" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Açıklama</label>
+                    <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Konum</label>
+                    <input asp-for="Konum" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Başlangıç Tarihi</label>
+                    <input asp-for="BaslangicTarihi" class="form-control" type="datetime-local" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Bitiş Tarihi</label>
+                    <input asp-for="BitisTarihi" class="form-control" type="datetime-local" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Kontenjan</label>
+                    <input asp-for="Kontenjan" class="form-control" type="number" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Durum</label>
+                    <select asp-for="Durum" class="form-control">
+                        <option value="Planlandı">Planlandı</option>
+                        <option value="Tamamlandı">Tamamlandı</option>
+                        <option value="İptal">İptal</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-warning mt-3">Değişiklikleri Kaydet</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">İptal</a>
+    </form>
+</div>

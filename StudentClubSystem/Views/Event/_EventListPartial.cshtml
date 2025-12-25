@@ -1,0 +1,113 @@
+﻿@model IEnumerable<StudentClubSystem.Models.Event>
+
+
+
+@if (Model.Count() == 0)
+
+{
+
+    <div class="alert alert-warning text-center">Aradığınız kriterlere uygun etkinlik bulunamadı.</div>
+
+}
+
+else
+
+{
+
+    <table class="table table-hover shadow-sm">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Kulüp</th>
+
+                <th>Etkinlik</th>
+
+                <th>Tarih</th>
+
+                <th>Konum</th>
+
+                <th>Kontenjan</th>
+
+                <th>Durum</th>
+
+                <th>İşlemler</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+
+            {
+
+                <tr>
+
+                    <td><span class="badge bg-info text-dark">@item.Club?.Ad</span></td>
+
+                    <td>
+
+                        <strong>@item.Baslik</strong><br />
+
+                        <small class="text-muted">@item.Aciklama</small>
+
+                    </td>
+
+                    <td>@item.BaslangicTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+
+                    <td>@item.Konum</td>
+
+                    <td>@item.Kontenjan</td>
+
+                    <td>
+
+                        @if (item.Durum == "Planlandı")
+
+                        {
+
+                            <span class="badge bg-primary">Planlandı</span>
+
+                        }
+
+                        else if (item.Durum == "İptal")
+
+                        {
+
+                            <span class="badge bg-danger">İptal</span>
+
+                        }
+
+                        else
+
+                        {
+
+                            <span class="badge bg-success">Tamamlandı</span>
+
+                        }
+
+                    </td>
+
+                    <td>
+
+                        <button class="btn btn-info btn-sm btnParticipants" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#modalParticipants">
+                            Yönet
+                        </button>
+
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Düzenle</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Sil</a>
+
+                    </td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+}

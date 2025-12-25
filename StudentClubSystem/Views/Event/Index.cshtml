@@ -1,0 +1,181 @@
+﻿@model IEnumerable<StudentClubSystem.Models.Event>
+
+@{
+    ViewData["Title"] = "Etkinlikler";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Etkinlik Listesi</h2>
+        <a asp-action="Create" class="btn btn-primary">+ Yeni Etkinlik Ekle</a>
+    </div>
+
+    <div class="card p-3 mb-4 bg-light">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" id="txtSearch" class="form-control" placeholder="Etkinlik ara..." />
+            </div>
+            <div class="col-md-3">
+                <select id="ddlClub" class="form-select" asp-items="ViewBag.Clubs">
+                    <option value="">Tüm Kulüpler</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="ddlStatus" class="form-select">
+                    <option value="">Tüm Durumlar</option>
+                    <option value="Planlandı">Planlandı</option>
+                    <option value="Tamamlandı">Tamamlandı</option>
+                    <option value="İptal">İptal</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button id="btnFilter" class="btn btn-secondary">Filtrele</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventTableContainer">
+        @await Html.PartialAsync("_EventListPartial", Model)
+    </div>
+</div>
+
+<div class="modal fade" id="modalParticipants" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Katılımcı Listesi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="text-center">Yükleniyor...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // --- 1. FİLTRELEME ---
+        function filterEvents() {
+            var searchVal = $("#txtSearch").val();
+            var clubVal = $("#ddlClub").val();
+            var statusVal = $("#ddlStatus").val();
+
+            $.ajax({
+                url: '/Event/Filter',
+                type: 'GET',
+                data: { search: searchVal, kulupId: clubVal, durum: statusVal },
+                success: function (result) {
+                    $("#eventTableContainer").html(result).hide().fadeIn(500); // Hafif bir efektle gelsin
+                },
+                error: function () {
+                    Swal.fire('Hata', 'Filtreleme sırasında bir sorun oluştu.', 'error');
+                }
+            });
+        }
+
+        $("#txtSearch").on("keyup", function() { filterEvents(); });
+        $("#ddlClub, #ddlStatus").change(function() { filterEvents(); });
+        $("#btnFilter").click(function() { filterEvents(); });
+
+        // --- 2. KATIL BUTONU (SWEETALERT İLE) ---
+        $(document).on("click", ".btnJoin", function () {
+            var eventId = $(this).data("id");
+            var button = $(this);
+
+            // Butona basınca dönme efekti verelim
+            var originalText = button.html();
+            button.html('<i class="fa-solid fa-spinner fa-spin"></i>');
+            button.prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                url: "/Event/Join",
+                data: { eventId: eventId },
+                xhrFields: { withCredentials: true },
+                success: function (response) {
+                    if (response.success) {
+                        // BAŞARILI UYARISI
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Harika!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        button.html('<i class="fa-solid fa-check"></i> Katıldınız').removeClass("btn-success").addClass("btn-secondary");
+                    } else {
+                        // HATA UYARISI
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Dikkat',
+                            text: response.message
+                        });
+                        button.html(originalText).prop("disabled", false);
+                    }
+                },
+                error: function (xhr) {
+                    button.html(originalText).prop("disabled", false);
+                    if (xhr.status == 401) {
+                         Swal.fire({
+                             icon: 'info',
+                             title: 'Giriş Gerekli',
+                             text: 'Lütfen önce giriş yapınız!',
+                             showCancelButton: true,
+                             confirmButtonText: 'Giriş Yap',
+                             cancelButtonText: 'İptal'
+                         }).then((result) => {
+                             if (result.isConfirmed) {
+                                 window.location.href = "/Account/Login";
+                             }
+                         });
+                    } else {
+                         Swal.fire('Hata', 'Sunucu hatası oluştu.', 'error');
+                    }
+                }
+            });
+        });
+
+        // --- 3. MODAL KATILIMCI ---
+        $(document).on("click", ".btnParticipants", function () {
+            var eventId = $(this).data("id");
+            $("#modalBody").html('<div class="text-center p-4"><i class="fa-solid fa-spinner fa-spin fa-3x text-primary"></i><p class="mt-2">Yükleniyor...</p></div>');
+
+            $.get("/Event/GetParticipants", { eventId: eventId }, function (data) {
+                $("#modalBody").hide().html(data).slideDown();
+            });
+        });
+
+        // --- 4. DURUM GÜNCELLEME (TOAST BİLDİRİM) ---
+        $(document).on("click", ".btnStatus", function () {
+            var btn = $(this);
+            var id = btn.data("id");
+            var status = btn.data("status");
+
+            $.post("/Event/UpdateStatus", { id: id, status: status }, function (res) {
+                if (res.success) {
+                    $(".status-badge-" + id).text(status)
+                        .removeClass("bg-secondary bg-success bg-danger bg-warning text-dark")
+                        .addClass(status == "Onaylı" ? "bg-success" : (status == "Reddedildi" ? "bg-danger" : "bg-warning text-dark"));
+
+                    // Ufak bildirim (Toast)
+                    const Toast = Swal.mixin({
+                      toast: true,
+                      position: 'top-end',
+                      showConfirmButton: false,
+                      timer: 3000
+                    });
+                    Toast.fire({
+                      icon: 'success',
+                      title: 'Durum güncellendi: ' + status
+                    });
+                } else {
+                    Swal.fire('Hata', res.message, 'error');
+                }
+            });
+        });
+    });
+</script>

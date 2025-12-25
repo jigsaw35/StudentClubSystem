@@ -1,0 +1,28 @@
+﻿@model StudentClubSystem.Models.Club
+
+@{
+    ViewData["Title"] = "Silme Onayı";
+}
+
+<div class="container mt-4">
+    <div class="alert alert-danger">
+        <h3>Emin misiniz?</h3>
+        <p><strong>@Model.Ad</strong> adlı kulübü silmek üzeresiniz. Bu işlem geri alınamaz.</p>
+    </div>
+
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">Açıklama:</dt>
+            <dd class="col-sm-10">@Model.Aciklama</dd>
+
+            <dt class="col-sm-2">Durum:</dt>
+            <dd class="col-sm-10">@(Model.AktifMi ? "Aktif" : "Pasif")</dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Evet, Sil</button>
+            <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
+        </form>
+    </div>
+</div>

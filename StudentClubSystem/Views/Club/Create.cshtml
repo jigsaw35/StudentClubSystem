@@ -1,0 +1,34 @@
+﻿@model StudentClubSystem.Models.Club
+
+@{
+    ViewData["Title"] = "Yeni Kulüp Ekle";
+}
+
+<div class="container mt-4">
+    <h2>Yeni Kulüp Oluştur</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Kulüp Adı</label>
+                    <input asp-for="Ad" class="form-control" />
+                    <span asp-validation-for="Ad" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Açıklama</label>
+                    <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                </div>  
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" asp-for="AktifMi" checked>
+                    <label class="form-check-label">Aktif Kulüp</label>
+                </div>
+
+                <button type="submit" class="btn btn-success">Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -8,7 +8,7 @@ namespace StudentClubSystem.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(100)] // Tavsiye edilen ekleme
+        [StringLength(100)] 
         public string AdSoyad { get; set; }
 
         [Required]
@@ -18,7 +18,7 @@ namespace StudentClubSystem.Models
         [Required]
         public string Sifre { get; set; }
 
-        public string Rol { get; set; } // Admin, KulupYoneticisi, Ogrenci
+        public string Rol { get; set; } 
 
         public virtual ICollection<EventRegistration>? EventRegistrations { get; set; }
     }
